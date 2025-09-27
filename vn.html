@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ucapan Ulang Tahun 🎉</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap');
+
+    body {
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Quicksand', sans-serif;
+      background: radial-gradient(circle at 20% 20%, #1a1a2e, #0f3460, #16213e);
+      color: white;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    canvas#universe, canvas#confetti {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -2;
+    }
+
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      z-index: 2;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #fff, 0 0 20px #4cc9f0, 0 0 35px #4361ee;
+      animation: fadeInDown 1.2s ease;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      max-width: 600px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.85);
+      opacity: 0;
+      animation: fadeIn 1.5s ease forwards;
+      animation-delay: 0.5s;
+    }
+
+    .vn-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      width: 100%;
+    }
+
+    /* === Voice note card ala uiverse.io === */
+    .vn-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 340px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 1s forwards;
+    }
+
+    .vn-card:nth-of-type(1) { animation-delay: 0.8s; }
+    .vn-card:nth-of-type(2) { animation-delay: 1.2s; }
+    .vn-card:nth-of-type(3) { animation-delay: 1.6s; }
+
+    .vn-card:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.6), 0 0 25px rgba(255,0,255,0.5), 0 0 40px rgba(67,97,238,0.4);
+    }
+
+    .vn-title {
+      font-size: 1.1em;
+      margin-bottom: 10px;
+      color: #ffdd57;
+      text-shadow: 0 0 8px rgba(255,221,87,0.7);
+    }
+
+    .player {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .play-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff00ff, #4361ee);
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 20px rgba(255,0,255,0.5);
+      flex-shrink: 0; /* Mencegah tombol menyusut */
+      margin-right: 15px;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.15) rotate(8deg);
+      box-shadow: 0 0 30px rgba(255,0,255,0.8);
+    }
+
+    .wave {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 35px;
+      width: 100%;
+    }
+
+    .bar {
+      width: 5px;
+      height: 6px;
+      background: #4cc9f0;
+      border-radius: 3px;
+      animation: bounce 1s infinite ease-in-out;
+      animation-play-state: paused;
+      box-shadow: 0 0 5px rgba(76,201,240,0.7);
+    }
+
+    .bar:nth-child(2) { animation-delay: 0.2s; }
+    .bar:nth-child(3) { animation-delay: 0.4s; }
+    .bar:nth-child(4) { animation-delay: 0.6s; }
+
+    @keyframes bounce {
+      0%, 100% { height: 6px; }
+      50% { height: 28px; }
+    }
+
+    /* Animasi fade */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === BALON & KUE === */
+    .decor {
+      position: absolute;
+      font-size: 2.5rem;
+      animation: floatUp 12s linear infinite;
+      z-index: -1;
+      opacity: 0.8;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(1); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(-120px) scale(1.2); opacity: 0; }
+    }
+
+    /* Balon interaktif */
+    .balloon { cursor: pointer; }
+    .balloon.pop {
+      transform: scale(1.5);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2em;
+      }
+      p {
+        font-size: 1em;
+      }
+      .vn-card {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="universe"></canvas>
+  <canvas id="confetti"></canvas>
+
+  <div class="main-container">
+    <h1>🎂 Selamat Ulang Tahun Shiro 🎂</h1>
+    <p>
+      Kami semua ingin mengucapkan selamat ulang tahun Shiro.
+      Semoga panjang umur, sehat selalu, dan semua harapanmu bisa tercapai.
+      Dengarkan pesan suara dari kami 💝
+    </p>
+
+    <!-- Voice Note Cards -->
+    <div class="vn-container">
+      <div class="vn-card">
+        <div class="vn-title">Pesan dari Zuu</div>
+        <div class="player">
+          <button class="play-btn" data-audio="gojo.mp3">▶</button>
+          <div class="wave">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vn-card">
+        <div class="vn-title">Pesan dari Mikael</div>
+        <div class="player">
+          <button class="play-btn" data-audio="gojo.mp3">▶</button>
+          <div class="wave">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vn-card">
+        <div class="vn-title">Pesan dari Miko</div>
+        <div class="player">
+          <button class="play-btn" data-audio="gojo.mp3">▶</button>
+          <div class="wave">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dekorasi Balon & Kue -->
+  <div class="decor balloon" style="left: 10%;">🎁</div>
+  <div class="decor balloon" style="left: 25%; animation-delay: 3s;">🎉</div>
+  <div class="decor" style="left: 50%; animation-delay: 6s;">🎂</div>
+  <div class="decor balloon" style="left: 70%; animation-delay: 2s;">✨</div>
+  <div class="decor balloon" style="left: 85%; animation-delay: 5s;">🎈</div>
+
+  <script>
+    // ====== ANIMASI UNIVERSE ======
+    const canvas = document.getElementById("universe");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let stars = [];
+    for (let i = 0; i < 180; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1.5,
+        speed: Math.random() * 0.6 + 0.2,
+        alpha: Math.random()
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(star => {
+        ctx.beginPath();
+        ctx.globalAlpha = star.alpha;
+        ctx.fillStyle = "white";
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    function updateStars() {
+      stars.forEach(star => {
+        star.y += star.speed;
+        star.alpha += (Math.random() - 0.5) * 0.05;
+        if (star.alpha < 0.2) star.alpha = 0.2;
+        if (star.alpha > 1) star.alpha = 1;
+        if (star.y > canvas.height) {
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
+      });
+    }
+
+    function animate() {
+      drawStars();
+      updateStars();
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    });
+
+    // ====== AUDIO PLAYER CUSTOM ======
+    let currentAudio = null;
+    const buttons = document.querySelectorAll(".play-btn");
+
+    buttons.forEach(btn => {
+      const audio = new Audio(btn.dataset.audio);
+      const bars = btn.parentElement.querySelectorAll(".bar");
+
+      btn.addEventListener("click", () => {
+        if (currentAudio && currentAudio !== audio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          document.querySelectorAll(".bar").forEach(b => b.style.animationPlayState = "paused");
+          document.querySelectorAll(".play-btn").forEach(b => b.textContent = "▶");
+        }
+
+        if (audio.paused) {
+          audio.play();
+          btn.textContent = "⏸";
+          bars.forEach(b => b.style.animationPlayState = "running");
+          currentAudio = audio;
+        } else {
+          audio.pause();
+          btn.textContent = "▶";
+          bars.forEach(b => b.style.animationPlayState = "paused");
+        }
+      });
+
+      audio.addEventListener("ended", () => {
+        btn.textContent = "▶";
+        bars.forEach(b => b.style.animationPlayState = "paused");
+      });
+    });
+
+    // ====== BALON INTERAKTIF ======
+    document.querySelectorAll(".balloon").forEach(bal => {
+      bal.addEventListener("click", () => {
+        bal.classList.add("pop");
+        setTimeout(() => bal.remove(), 400);
+      });
+    });
+
+    // ====== CONFETTI ======
+    const confettiCanvas = document.getElementById("confetti");
+    const ctx2 = confettiCanvas.getContext("2d");
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+
+    const confetti = [];
+    for (let i = 0; i < 150; i++) {
+      confetti.push({
+        x: Math.random() * confettiCanvas.width,
+        y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+        r: Math.random() * 6 + 2,
+        d: Math.random() * 0.5 + 0.5,
+        color: `hsl(${Math.random() * 360}, 80%, 60%)`
+      });
+    }
+
+    function drawConfetti() {
+      ctx2.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      confetti.forEach(c => {
+        ctx2.beginPath();
+        ctx2.arc(c.x, c.y, c.r, 0, Math.PI * 2, false);
+        ctx2.fillStyle = c.color;
+        ctx2.fill();
+      });
+      updateConfetti();
+    }
+
+    function updateConfetti() {
+      confetti.forEach(c => {
+        c.y += c.d * 3;
+        if (c.y > confettiCanvas.height) {
+          c.y = -10;
+          c.x = Math.random() * confettiCanvas.width;
+        }
+      });
+    }
+
+    setInterval(drawConfetti, 20);
+  </script>
+</body>
+</html>

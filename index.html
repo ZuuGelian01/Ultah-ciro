@@ -41,10 +41,18 @@
       text-shadow: 0 0 12px #00f0ff, 0 0 20px #0077ff;
     }
 
-    input[type="password"] {
+    .password-container {
+      position: relative;
       width: 90%;
+      margin: 0 auto 20px;
+    }
+
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      margin-bottom: 0;
       padding: 12px;
-      margin-bottom: 20px;
+      padding-right: 45px; /* Ruang untuk ikon mata */
+      box-sizing: border-box;
       border: none;
       border-radius: 10px;
       outline: none;
@@ -56,8 +64,22 @@
       transition: 0.3s ease;
     }
 
-    input[type="password"]:focus {
+    input[type="password"]:focus, input[type="text"]:focus {
       box-shadow: 0 0 12px #00f0ff, 0 0 20px #0077ff;
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #aaa;
+      transition: color 0.2s ease;
+    }
+
+    .toggle-password:hover {
+      color: #00f0ff;
     }
 
     /* Tombol Animasi Baru */
@@ -180,7 +202,13 @@
 <body>
   <div class="login-box">
     <h2>🔒 Sebelum Lanjut Harus Login Dulu</h2>
-    <input type="password" id="password" placeholder="Masukkan Password">
+    <div class="password-container">
+      <input type="password" id="password" placeholder="Masukkan Password">
+      <span id="togglePassword" class="toggle-password">
+        <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M9.9 9.9 4.2 4.2C2.1 6.3 1 9 1 12s1.1 5.7 3.2 7.8l5.7-5.7Z"></path><path d="m14.1 14.1 5.7 5.7C21.9 17.7 23 15 23 12s-1.1-5.7-3.2-7.8l-5.7 5.7Z"></path><path d="M12 17.3a5.3 5.3 0 0 1-2.8-.8l-4.9 4.9"></path><path d="M1.1 1.1 22.9 22.9"></path><path d="M14.8 12a2.8 2.8 0 0 0-4-4l-4.9-4.9"></path></svg>
+     </span>
+   </div>
     <button class="animated-button" id="loginBtn">
       <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -202,6 +230,9 @@
     const loginBtn = document.getElementById("loginBtn");
     const passwordInput = document.getElementById("password");
     const errorMsg = document.getElementById("errorMsg");
+    const togglePassword = document.getElementById("togglePassword");
+    const eyeOpen = document.getElementById("eye-open");
+    const eyeClosed = document.getElementById("eye-closed");
     let wrongAttempts = 0;
 
     const correctPassword = "Zuu Suami Kurokawa Akane"; 
@@ -226,6 +257,19 @@
     loginBtn.addEventListener("click", login);
     passwordInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") login();
+    });
+
+    togglePassword.addEventListener("click", () => {
+      const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+
+      if (type === "text") {
+        eyeOpen.style.display = "none";
+        eyeClosed.style.display = "block";
+      } else {
+        eyeOpen.style.display = "block";
+        eyeClosed.style.display = "none";
+      }
     });
   </script>
 </body>
